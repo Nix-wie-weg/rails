@@ -49,17 +49,17 @@ module ActiveRecord
           [options[:limit], count].compact.min
         end
 
-        def has_cached_counter?(reflection = reflection)
+        def has_cached_counter?(xreflection = reflection)
           owner.attribute_present?(cached_counter_attribute_name(reflection))
         end
 
-        def cached_counter_attribute_name(reflection = reflection)
-          "#{reflection.name}_count"
+        def cached_counter_attribute_name(xreflection = reflection)
+          "#{xreflection.name}_count"
         end
 
-        def update_counter(difference, reflection = reflection)
-          if has_cached_counter?(reflection)
-            counter = cached_counter_attribute_name(reflection)
+        def update_counter(difference, xreflection = reflection)
+          if has_cached_counter?(xreflection)
+            counter = cached_counter_attribute_name(xreflection)
             owner.class.update_counters(owner.id, counter => difference)
             owner[counter] += difference
             owner.changed_attributes.delete(counter) # eww
@@ -76,8 +76,8 @@ module ActiveRecord
         #     it will be decremented twice.
         #
         # Hence this method.
-        def inverse_updates_counter_cache?(reflection = reflection)
-          counter_name = cached_counter_attribute_name(reflection)
+        def inverse_updates_counter_cache?(xreflection = reflection)
+          counter_name = cached_counter_attribute_name(xreflection)
           reflection.klass.reflect_on_all_associations(:belongs_to).any? { |inverse_reflection|
             inverse_reflection.counter_cache_column == counter_name
           }
